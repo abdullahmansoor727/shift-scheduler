@@ -15,7 +15,6 @@ type Employee = {
 
 const daysOfWeek = ["mon", "tue", "wed", "thurs", "fri", "sat", "sun"];
 const shifts: ("day" | "night")[] = ["day", "night"];
-
 interface IRule {
 	checkRule(
 		employee: Employee,
@@ -24,7 +23,6 @@ interface IRule {
 		currentDayIndex?: number
 	): boolean;
 }
-
 class ConsecutiveShiftsRule implements IRule {
 	checkRule(
 		employee: Employee,
@@ -264,19 +262,34 @@ function calculate_schedule(employees: Employee[], rules: IRule[]) {
 		sun: { day: null, night: null },
 	};
 
+	var availability = {
+		mon: { day: [], night: [] },
+		tue: { day: [], night: [] },
+		wed: { day: [], night: [] },
+		thurs: { day: [], night: [] },
+		fri: { day: [], night: [] },
+		sat: { day: [], night: [] },
+		sun: { day: [], night: [] },
+	};
+
 	// check for any shifts where there is only one employee option
 	for (var i = 0; i < 7; i++) {
 		let dayAvailable: Employee[] = [];
 		let nightAvailable: Employee[] = [];
+		const dayOfTheWeek: string = daysOfWeek[i];
 
 		employees.forEach((employee) => {
 			if (Object.values(employee.availability)[i].day) {
+				2;
 				dayAvailable.push(employee);
 			}
 			if (Object.values(employee.availability)[i].night) {
 				nightAvailable.push(employee);
 			}
 		});
+
+		availability[dayOfTheWeek].day = dayAvailable;
+		availability[dayOfTheWeek].night = nightAvailable;
 
 		if (dayAvailable.length == 1) {
 			schedule[daysOfWeek[i]].day = dayAvailable[0].id;
@@ -308,9 +321,9 @@ function calculate_schedule(employees: Employee[], rules: IRule[]) {
 				if (passedAllRules && shift === "day") {
 					dayAvailable.push(employee);
 				}
-				if (passedAllRules && shift === "night") {
-					nightAvailable.push(employee);
-				}
+				// if (passedAllRules && shift === "night") {
+				nightAvailable.push(employee);
+				// }
 			}
 		});
 
